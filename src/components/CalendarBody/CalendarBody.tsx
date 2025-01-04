@@ -1,5 +1,9 @@
 interface CalendarBodyProps {
-  finalDaysArray: number[][];
+  finalDaysArray: {
+    day: number;
+    type: string;
+    month: string;
+  }[][];
 }
 
 export function CalendarBody({ finalDaysArray }: CalendarBodyProps) {
@@ -20,7 +24,9 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyProps) {
                     border: '1px solid #000',
                   }}
                 >
-                  {item}
+                  <p>{item.day}</p>
+                  <p>{item.type}</p>
+                  <p>{item.month}</p>
                 </div>
               );
             })}

@@ -7,10 +7,13 @@ function App() {
   const dateToday = new Date();
   const year = dateToday.getFullYear();
   const currentMonth = (dateToday.getMonth() + 1).toString().padStart(2, '0');
-  const currentMonthName = new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-  }).format(dateToday);
+  const currentMonthName = dayjs()
+    .month(Number(currentMonth) - 1)
+    .format('MMMM');
 
+  const prevMonthDate = dayjs()
+    .month(Number(currentMonth) - 2)
+    .format('MMMM');
   const prevMonth = new Date(year, Number(currentMonth) - 1);
   const prevMonthDaysCount = dayjs(prevMonth).daysInMonth();
 
@@ -19,12 +22,16 @@ function App() {
 
   const prevMonthDayArray = [];
   for (let i = prevMonthDaysCount; i > prevMonthDaysCount - firstDayIs; i--) {
-    prevMonthDayArray.push(i);
+    prevMonthDayArray.push({ day: i, type: 'prev', month: prevMonthDate });
   }
 
   const currentMonthDaysArray = [];
   for (let i = 1; i <= numberOfDays; i++) {
-    currentMonthDaysArray.push(i);
+    currentMonthDaysArray.push({
+      day: i,
+      type: 'current',
+      month: currentMonthName,
+    });
   }
 
   const PrevAndCurrentMonthDays = [
@@ -40,8 +47,14 @@ function App() {
   const nextMonthDays =
     finalDaysArray.length * 7 - finalDaysArray.flat().length;
 
+  const nextMonthDate = dayjs().month(Number(currentMonth)).format('MMMM');
+
   for (let i = 1; i <= nextMonthDays; i++) {
-    finalDaysArray[finalDaysArray.length - 1].push(i);
+    finalDaysArray[finalDaysArray.length - 1].push({
+      day: i,
+      type: 'next',
+      month: nextMonthDate,
+    });
   }
 
   return (
