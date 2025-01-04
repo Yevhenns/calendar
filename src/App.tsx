@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import dayjs from 'dayjs';
+import { CalendarBody } from './components/CalendarBody/CalendarBody';
+import { CalendarHead } from './components/CalendarHead/CalendarHead';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dateToday = new Date();
+  const year = dateToday.getFullYear();
+  const currentMonth = (dateToday.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonthName = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+  }).format(dateToday);
+
+  const prevMonth = new Date(year, Number(currentMonth) - 1);
+  const prevMonthDaysCount = dayjs(prevMonth).daysInMonth();
+
+  const numberOfDays = dayjs(`${year}-${currentMonth}`).daysInMonth();
+  const firstDayIs = dayjs(`${year}-${currentMonth}-01`).day();
+
+  const prevMonthDayArray = [];
+  for (let i = prevMonthDaysCount; i > prevMonthDaysCount - firstDayIs; i--) {
+    prevMonthDayArray.push(i);
+  }
+
+  const currentMonthDaysArray = [];
+  for (let i = 1; i <= numberOfDays; i++) {
+    currentMonthDaysArray.push(i);
+  }
+
+  const PrevAndCurrentMonthDays = [
+    ...prevMonthDayArray.reverse(),
+    ...currentMonthDaysArray,
+  ];
+
+  const finalDaysArray = [];
+  for (let i = 0; i <= PrevAndCurrentMonthDays.length; i += 7) {
+    finalDaysArray.push(PrevAndCurrentMonthDays.slice(i, i + 7));
+  }
+
+  const nextMonthDays =
+    finalDaysArray.length * 7 - finalDaysArray.flat().length;
+
+  for (let i = 1; i <= nextMonthDays; i++) {
+    finalDaysArray[finalDaysArray.length - 1].push(i);
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <div>
+      <p>
+        {currentMonthName} {year}
       </p>
-    </>
-  )
+      <CalendarHead />
+      <CalendarBody finalDaysArray={finalDaysArray} />
+    </div>
+  );
 }
 
-export default App
+export default App;
