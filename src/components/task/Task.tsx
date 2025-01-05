@@ -3,10 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { css } from '@emotion/css';
 
 interface TaskProps {
-  item: {
-    id: string;
-    text: string;
-  };
+  item: Task;
 }
 
 export function Task({ item }: TaskProps) {

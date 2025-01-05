@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Task } from '../task/Task';
 import { nanoid } from 'nanoid';
 import { css } from '@emotion/css';
@@ -9,17 +8,11 @@ import {
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
+  addTask: (dayId: string) => void;
 }
 
-export function CalendarDay({ dayItem }: CalendarDayProps) {
-  const [items] = useState([
-    { id: nanoid(), text: 'task1' },
-    { id: nanoid(), text: 'task2' },
-  ]);
-
-  const { day, month, type } = dayItem;
-
-  const dayWrapper = css({
+const dayWrapper = (type: CalendarDay['type']) =>
+  css({
     padding: '4px',
     textAlign: 'left',
     width: '150px',
@@ -28,14 +21,23 @@ export function CalendarDay({ dayItem }: CalendarDayProps) {
     borderRadius: '4px',
   });
 
-  const taskWrapper = css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  });
+const taskWrapper = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+});
+
+export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
+  console.log(dayItem);
+
+  const { id, day, month, type, tasks } = dayItem;
+
+  const addNewTask = () => {
+    addTask(id);
+  };
 
   return (
-    <div className={dayWrapper}>
+    <div className={dayWrapper(type)}>
       {type === 'current' ? (
         <p>{day}</p>
       ) : (
@@ -44,14 +46,17 @@ export function CalendarDay({ dayItem }: CalendarDayProps) {
         </p>
       )}
       {type === 'current' && (
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
           <div className={taskWrapper}>
-            {items.map(item => {
+            {tasks.map(item => {
               return <Task key={nanoid()} item={item} />;
             })}
           </div>
         </SortableContext>
       )}
+      <button onClick={addNewTask} type="button">
+        add
+      </button>
     </div>
   );
 }

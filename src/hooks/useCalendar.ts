@@ -22,15 +22,23 @@ export function useCalendar() {
   useEffect(() => {
     const prevMonthDayArray = [];
     for (let i = prevMonthDaysCount; i > prevMonthDaysCount - firstDayIs; i--) {
-      prevMonthDayArray.push({ day: i, type: 'prev', month: prevMonthDate });
+      prevMonthDayArray.push({
+        id: `${i}-${prevMonthDate}`,
+        day: i,
+        type: 'prev',
+        month: prevMonthDate,
+        tasks: [],
+      });
     }
 
     const currentMonthDaysArray = [];
     for (let i = 1; i <= numberOfDays; i++) {
       currentMonthDaysArray.push({
+        id: `${i}-${currentMonthName}`,
         day: i,
         type: 'current',
         month: currentMonthName,
+        tasks: [],
       });
     }
 
@@ -51,9 +59,11 @@ export function useCalendar() {
 
     for (let i = 1; i <= nextMonthDays; i++) {
       finalDaysArray[finalDaysArray.length - 1].push({
+        id: `${i}-${nextMonthDate}`,
         day: i,
         type: 'next',
         month: nextMonthDate,
+        tasks: [],
       });
     }
 
