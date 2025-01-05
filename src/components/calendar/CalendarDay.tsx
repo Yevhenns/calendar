@@ -6,6 +6,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { Button } from '../shared/Button';
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
@@ -22,6 +23,7 @@ const dayWrapper = (type: CalendarDay['type']) =>
     borderRadius: '4px',
     display: 'flex',
     flexDirection: 'column',
+    gap: '4px',
   });
 
 const taskWrapper = css({
@@ -48,8 +50,13 @@ const buttonSet = css({
   justifyContent: 'end',
 });
 
-const btn = css({
+const btnWrapper = css({
   marginTop: 'auto',
+});
+
+const input = css({
+  padding: '4px',
+  borderRadius: '4px',
 });
 
 export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
@@ -89,15 +96,18 @@ export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
           <div className={taskWrapper}>
             {isEditMode && (
               <>
-                <input onChange={e => setValue(e.target.value)} />
+                <input
+                  className={input}
+                  onChange={e => setValue(e.target.value)}
+                />
                 <div className={buttonSet}>
-                  <button
+                  <Button
                     disabled={isEditMode && value.trim().length === 0}
                     onClick={addNewTask}
                   >
                     Ok
-                  </button>
-                  <button onClick={rejectAddNewTask}>Cancel</button>
+                  </Button>
+                  <Button onClick={rejectAddNewTask}>Cancel</Button>
                 </div>
               </>
             )}
@@ -110,14 +120,11 @@ export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
               ))}
             </SortableContext>
           </div>
-          <button
-            disabled={isEditMode}
-            className={btn}
-            onClick={openInput}
-            type="button"
-          >
-            Add new task
-          </button>
+          <div className={btnWrapper}>
+            <Button disabled={isEditMode} onClick={openInput} type="button">
+              Add new task
+            </Button>
+          </div>
         </>
       )}
     </div>

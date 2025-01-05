@@ -18,6 +18,8 @@ export function Task({ item }: TaskProps) {
 
   const taskWrapper = css({
     backgroundColor: '#FFFFFF',
+    padding: '4px',
+    borderRadius: '4px',
     cursor: isDragging ? 'grabbing' : 'grab',
     transform: CSS.Transform.toString(transform),
     transition,
