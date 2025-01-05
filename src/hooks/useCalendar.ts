@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 
 export function useCalendar() {
   const [finalDaysArray, setFinalDaysArray] = useState<CalendarMonth>();
+  const [dateToday, setDateToday] = useState(new Date());
 
-  const dateToday = new Date();
   const currentMonth = (dateToday.getMonth() + 1).toString().padStart(2, '0');
   const currentMonthName = dayjs()
     .month(Number(currentMonth) - 1)
@@ -18,6 +18,24 @@ export function useCalendar() {
     .format('MMMM');
   const prevMonth = new Date(year, Number(currentMonth) - 1);
   const prevMonthDaysCount = dayjs(prevMonth).daysInMonth();
+
+  const incrementMonth = () => {
+    const firstDayOfMonth = new Date(`${year}-${currentMonth}-01`);
+    const date = new Date(
+      firstDayOfMonth.setDate(firstDayOfMonth.getDate() + numberOfDays)
+    );
+    console.log(date);
+    setDateToday(date);
+  };
+
+  const decrementMonth = () => {
+    const firstDayOfMonth = new Date(`${year}-${currentMonth}-01`);
+    const date = new Date(
+      firstDayOfMonth.setDate(firstDayOfMonth.getDate() - prevMonthDaysCount)
+    );
+    console.log(date);
+    setDateToday(date);
+  };
 
   useEffect(() => {
     const prevMonthDayArray = [];
@@ -57,14 +75,16 @@ export function useCalendar() {
 
     const nextMonthDate = dayjs().month(Number(currentMonth)).format('MMMM');
 
-    for (let i = 1; i <= nextMonthDays; i++) {
-      finalDaysArray[finalDaysArray.length - 1].push({
-        id: `${i}-${nextMonthDate}`,
-        day: i,
-        type: 'next',
-        month: nextMonthDate,
-        tasks: [],
-      });
+    if (nextMonthDays !== 7) {
+      for (let i = 1; i <= nextMonthDays; i++) {
+        finalDaysArray[finalDaysArray.length - 1].push({
+          id: `${i}-${nextMonthDate}`,
+          day: i,
+          type: 'next',
+          month: nextMonthDate,
+          tasks: [],
+        });
+      }
     }
 
     setFinalDaysArray(finalDaysArray as CalendarMonth);
@@ -77,5 +97,11 @@ export function useCalendar() {
     prevMonthDaysCount,
   ]);
 
-  return { finalDaysArray, currentMonthName, year };
+  return {
+    finalDaysArray,
+    currentMonthName,
+    year,
+    incrementMonth,
+    decrementMonth,
+  };
 }

@@ -97,6 +97,7 @@ export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
             {isEditMode && (
               <>
                 <input
+                  name="task"
                   className={input}
                   onChange={e => setValue(e.target.value)}
                 />
