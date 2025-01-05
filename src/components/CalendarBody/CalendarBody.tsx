@@ -1,15 +1,11 @@
-interface CalendarBodyProps {
-  finalDaysArray: {
-    day: number;
-    type: string;
-    month: string;
-  }[][];
+interface CalendarBodyBody {
+  finalDaysArray?: CalendarMonth;
 }
 
-export function CalendarBody({ finalDaysArray }: CalendarBodyProps) {
+export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
   return (
     <>
-      {finalDaysArray.map((item, index) => {
+      {finalDaysArray?.map((item, index) => {
         return (
           <div key={index} style={{ display: 'flex' }}>
             {item.map((item, index) => {
