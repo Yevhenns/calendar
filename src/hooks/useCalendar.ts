@@ -24,7 +24,6 @@ export function useCalendar() {
     const date = new Date(
       firstDayOfMonth.setDate(firstDayOfMonth.getDate() + numberOfDays)
     );
-    console.log(date);
     setDateToday(date);
   };
 
@@ -33,7 +32,6 @@ export function useCalendar() {
     const date = new Date(
       firstDayOfMonth.setDate(firstDayOfMonth.getDate() - prevMonthDaysCount)
     );
-    console.log(date);
     setDateToday(date);
   };
 
