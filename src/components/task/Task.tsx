@@ -7,13 +7,24 @@ interface TaskProps {
 }
 
 export function Task({ item }: TaskProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: item.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
 
   const taskWrapper = css({
     backgroundColor: '#FFFFFF',
+    cursor: isDragging ? 'grabbing' : 'grab',
     transform: CSS.Transform.toString(transform),
     transition,
+  });
+
+  const text = css({
+    wordWrap: 'break-word',
   });
 
   return (
@@ -23,7 +34,7 @@ export function Task({ item }: TaskProps) {
       {...listeners}
       className={taskWrapper}
     >
-      <p>{item.text}</p>
+      <p className={text}>{item.text}</p>
     </div>
   );
 }

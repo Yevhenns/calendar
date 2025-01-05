@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { css } from '@emotion/css';
 import { CalendarDay } from './CalendarDay';
 import {
   closestCenter,
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -37,10 +37,10 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     })
   );
 
-  const addTask = (dayId: string) => {
+  const addTask = (dayId: string, value: string) => {
     const task = {
       id: nanoid(),
-      text: nanoid(),
+      text: value,
     };
     setItems(prevItems => {
       const updatedDays = prevItems.map(week => {
@@ -55,15 +55,15 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     });
   };
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
+    if (active.id !== over?.id) {
       setItems(month => {
         return month.map(week => {
           return week.map(day => {
             const oldIndex = day.tasks.findIndex(task => task.id === active.id);
-            const newIndex = day.tasks.findIndex(task => task.id === over.id);
+            const newIndex = day.tasks.findIndex(task => task.id === over?.id);
 
             if (oldIndex !== -1 && newIndex !== -1) {
               const updatedTasks = arrayMove(day.tasks, oldIndex, newIndex);
