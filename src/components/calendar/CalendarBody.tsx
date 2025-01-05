@@ -1,8 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { css } from '@emotion/css';
 import { CalendarDay } from './CalendarDay';
-import { DndContext } from '@dnd-kit/core';
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
+import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
 interface CalendarBodyBody {
   finalDaysArray?: CalendarMonth;
@@ -21,6 +30,12 @@ const weekWrapper = css({
 
 export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
   const [items, setItems] = useState<CalendarMonth>([]);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const addTask = (dayId: string) => {
     const task = {
@@ -40,6 +55,29 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     });
   };
 
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setItems(month => {
+        return month.map(week => {
+          return week.map(day => {
+            const oldIndex = day.tasks.findIndex(task => task.id === active.id);
+            const newIndex = day.tasks.findIndex(task => task.id === over.id);
+
+            if (oldIndex !== -1 && newIndex !== -1) {
+              const updatedTasks = arrayMove(day.tasks, oldIndex, newIndex);
+
+              return { ...day, tasks: updatedTasks };
+            }
+
+            return day;
+          });
+        });
+      });
+    }
+  }
+
   useEffect(() => {
     if (finalDaysArray) {
       setItems(finalDaysArray);
@@ -47,7 +85,11 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
   }, [finalDaysArray]);
 
   return (
-    <DndContext>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
       <div className={monthWrapper}>
         {items.map((item, index) => {
           return (

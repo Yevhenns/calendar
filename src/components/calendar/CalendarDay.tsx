@@ -1,5 +1,4 @@
 import { Task } from '../task/Task';
-import { nanoid } from 'nanoid';
 import { css } from '@emotion/css';
 import {
   SortableContext,
@@ -28,8 +27,6 @@ const taskWrapper = css({
 });
 
 export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
-  console.log(dayItem);
-
   const { id, day, month, type, tasks } = dayItem;
 
   const addNewTask = () => {
@@ -46,13 +43,13 @@ export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
         </p>
       )}
       {type === 'current' && (
-        <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
-          <div className={taskWrapper}>
-            {tasks.map(item => {
-              return <Task key={nanoid()} item={item} />;
-            })}
-          </div>
-        </SortableContext>
+        <div className={taskWrapper}>
+          <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+            {tasks.map(item => (
+              <Task key={item.id} item={item} />
+            ))}
+          </SortableContext>
+        </div>
       )}
       <button onClick={addNewTask} type="button">
         add
