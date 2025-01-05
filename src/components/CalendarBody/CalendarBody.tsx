@@ -8,7 +8,7 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
       {finalDaysArray?.map((item, index) => {
         return (
           <div key={index} style={{ display: 'flex' }}>
-            {item.map((item, index) => {
+            {item.map(({ day, type, month }, index) => {
               return (
                 <div
                   key={index}
@@ -20,9 +20,13 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
                     border: '1px solid #000',
                   }}
                 >
-                  <p>{item.day}</p>
-                  <p>{item.type}</p>
-                  <p>{item.month}</p>
+                  {type === 'current' ? (
+                    <p>{day}</p>
+                  ) : (
+                    <p>
+                      {day}, {month}
+                    </p>
+                  )}
                 </div>
               );
             })}

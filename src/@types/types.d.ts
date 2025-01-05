@@ -1,6 +1,6 @@
 interface CalendarDay {
   day: number;
-  type: string;
+  type: 'prev' | 'current' | 'next';
   month: string;
 }
 
