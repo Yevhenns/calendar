@@ -57,7 +57,7 @@ export function useCalendar() {
       });
     }
 
-    setFinalDaysArray(finalDaysArray);
+    setFinalDaysArray(finalDaysArray as CalendarMonth);
   }, [
     currentMonth,
     currentMonthName,
