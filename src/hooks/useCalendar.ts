@@ -75,14 +75,16 @@ export function useCalendar() {
 
     const nextMonthDate = dayjs().month(Number(currentMonth)).format('MMMM');
 
-    for (let i = 1; i <= nextMonthDays; i++) {
-      finalDaysArray[finalDaysArray.length - 1].push({
-        id: `${i}-${nextMonthDate}`,
-        day: i,
-        type: 'next',
-        month: nextMonthDate,
-        tasks: [],
-      });
+    if (nextMonthDays !== 7) {
+      for (let i = 1; i <= nextMonthDays; i++) {
+        finalDaysArray[finalDaysArray.length - 1].push({
+          id: `${i}-${nextMonthDate}`,
+          day: i,
+          type: 'next',
+          month: nextMonthDate,
+          tasks: [],
+        });
+      }
     }
 
     setFinalDaysArray(finalDaysArray as CalendarMonth);
