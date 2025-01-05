@@ -1,16 +1,15 @@
-import { CalendarBody } from './components/CalendarBody/CalendarBody';
-import { CalendarHead } from './components/CalendarHead/CalendarHead';
-import './App.css';
+import { CalendarBody, CalendarHead } from './components/calendar';
 import { useCalendar } from './hooks/useCalendar';
+import './App.css';
 
 function App() {
   const { finalDaysArray, currentMonthName, year } = useCalendar();
 
   return (
     <div>
-      <p>
+      <h3>
         {currentMonthName} {year}
-      </p>
+      </h3>
       <CalendarHead />
       <CalendarBody finalDaysArray={finalDaysArray} />
     </div>
