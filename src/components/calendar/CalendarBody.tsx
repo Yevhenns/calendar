@@ -64,8 +64,6 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
         return week.map(day => {
           if (day.id === dayId) {
             const filteredArray = day.tasks.filter(item => item.id !== taskId);
-            console.log(filteredArray);
-
             return { ...day, tasks: filteredArray };
           }
           return day;

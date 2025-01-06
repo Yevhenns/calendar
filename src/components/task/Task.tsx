@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { CiEdit } from 'react-icons/ci';
+import { MdOutlineDragIndicator } from 'react-icons/md';
 import { TiDelete } from 'react-icons/ti';
 
 import { useSortable } from '@dnd-kit/sortable';
@@ -14,8 +15,6 @@ interface TaskProps {
 }
 
 export function Task({ item, deleteItem }: TaskProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   const btnWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -32,9 +31,17 @@ export function Task({ item, deleteItem }: TaskProps) {
     backgroundColor: '#FFFFFF',
     padding: '4px',
     borderRadius: '4px',
-    cursor: isDragging ? 'grabbing' : 'grab',
     transform: CSS.Transform.toString(transform),
     transition,
+  });
+
+  const dnd = css({
+    cursor: isDragging ? 'grabbing' : 'grab',
+  });
+
+  const dndWrapper = css({
+    display: 'flex',
+    justifyContent: 'space-between',
   });
 
   const text = css({
@@ -42,50 +49,31 @@ export function Task({ item, deleteItem }: TaskProps) {
   });
 
   const btnWrapper = css({
-    position: 'absolute',
-    top: 0,
-    right: isHovered ? '0' : '-60px',
-    zIndex: isHovered ? 9 : 0,
     display: 'flex',
     gap: '4px',
     transition: 'right 0.3s linear',
   });
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  const handleDeleteItem = (e: any) => {
-    e.stopPropagation();
-    console.log(item);
-
+  const handleDeleteItem = () => {
     deleteItem(item.id);
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      className={taskWrapper}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div>a</div>
-      <p className={text}>{item.text}</p>
-
-      <div ref={btnWrapperRef} className={btnWrapper}>
-        <IconButton>
-          <CiEdit size={24} color="#000" />
-        </IconButton>
-        <IconButton onClick={handleDeleteItem}>
-          <TiDelete size={24} color="#000" />
-        </IconButton>
+    <div className={taskWrapper}>
+      <div className={dndWrapper}>
+        <div ref={setNodeRef} {...attributes} {...listeners} className={dnd}>
+          <MdOutlineDragIndicator size={24} />
+        </div>
+        <div ref={btnWrapperRef} className={btnWrapper}>
+          <IconButton>
+            <CiEdit size={24} color="#000" />
+          </IconButton>
+          <IconButton onClick={handleDeleteItem}>
+            <TiDelete size={24} color="#000" />
+          </IconButton>
+        </div>
       </div>
+      <p className={text}>{item.text}</p>
     </div>
   );
 }

@@ -30,7 +30,7 @@ const dayWrapper = ({
   css({
     padding: '4px',
     textAlign: 'left',
-    width: '150px',
+    width: '200px',
     height: '150px',
     ...(type === 'current'
       ? {
@@ -118,8 +118,6 @@ export function CalendarDay({
   const { ref } = useOnClickOutside(rejectAddNewTask);
 
   const deleteItem = (taskId: string) => {
-    console.log(taskId);
-
     deleteTask(id, taskId);
   };
 
