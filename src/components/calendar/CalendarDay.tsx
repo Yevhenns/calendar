@@ -17,6 +17,131 @@ interface CalendarDayProps {
   addTask: (dayId: string, value: string) => void;
   editTask: (dayId: string, taskId: string, value: string) => void;
   deleteTask: (dayId: string, taskId: string) => void;
+  holidays: Holidays[];
+}
+
+export function CalendarDay({
+  dayItem,
+  index,
+  addTask,
+  editTask,
+  deleteTask,
+  holidays,
+}: CalendarDayProps) {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [value, setValue] = useState('');
+  const [currentTaskId, setCurrentTaskId] = useState('');
+
+  const { id, day, month, type, tasks } = dayItem;
+
+  const isDayToday = dayjs().format('YYYY-MM-DD') === id;
+  const isWeekend = index === 0 || index === 6;
+
+  const filteredHolidays = holidays.filter(item => item.date === id);
+  console.log(filteredHolidays);
+
+  const openInput = () => {
+    setIsEditMode(true);
+    setEdit(false);
+    setCurrentTaskId('');
+  };
+
+  const submitTask = () => {
+    if (!edit) {
+      addTask(id, value);
+      setIsEditMode(false);
+      setEdit(false);
+      setValue('');
+    } else {
+      editTask(id, currentTaskId, value);
+      setIsEditMode(false);
+    }
+    setCurrentTaskId('');
+  };
+
+  const rejectAddNewTask = () => {
+    setIsEditMode(false);
+    setEdit(false);
+    setValue('');
+    setCurrentTaskId('');
+  };
+
+  const { ref } = useOnClickOutside(rejectAddNewTask);
+
+  const deleteItem = (taskId: string) => {
+    deleteTask(id, taskId);
+  };
+
+  const editItem = (taskId: string) => {
+    setIsEditMode(true);
+    setEdit(true);
+    const taskById = tasks.find(item => item.id === taskId);
+    setValue(taskById!.text);
+    setCurrentTaskId(taskId);
+  };
+
+  return (
+    <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
+      {type === 'current' ? (
+        <div className={dayAndHolidayWrapper}>
+          <p>{day}</p>
+          <div>
+            {filteredHolidays.map(item => (
+              <p>{item.name}</p>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p>
+          {day}, {month}
+        </p>
+      )}
+      {type === 'current' && (
+        <>
+          <div className={taskWrapper}>
+            {isEditMode && (
+              <>
+                <input
+                  value={value}
+                  name="task"
+                  className={input}
+                  onChange={e => setValue(e.target.value)}
+                />
+                <div className={buttonSet}>
+                  <Button
+                    disabled={isEditMode && value.trim().length === 0}
+                    onClick={submitTask}
+                  >
+                    Ok
+                  </Button>
+                  <Button onClick={rejectAddNewTask}>Cancel</Button>
+                </div>
+              </>
+            )}
+            <SortableContext
+              items={tasks}
+              strategy={verticalListSortingStrategy}
+            >
+              {tasks.map(item => (
+                <Task
+                  key={item.id}
+                  item={item}
+                  editItem={editItem}
+                  deleteItem={deleteItem}
+                />
+              ))}
+            </SortableContext>
+          </div>
+          <div className={btnWrapper}>
+            <Button disabled={isEditMode} onClick={openInput} type="button">
+              Add new task
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
 const dayWrapper = ({
@@ -87,115 +212,7 @@ const input = css({
   borderRadius: '4px',
 });
 
-export function CalendarDay({
-  dayItem,
-  index,
-  addTask,
-  editTask,
-  deleteTask,
-}: CalendarDayProps) {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [value, setValue] = useState('');
-  const [currentTaskId, setCurrentTaskId] = useState('');
-
-  const { id, day, month, type, tasks } = dayItem;
-
-  const isDayToday = dayjs().format('YYYY-MM-DD') === id;
-  const isWeekend = index === 0 || index === 6;
-
-  const openInput = () => {
-    setIsEditMode(true);
-    setEdit(false);
-    setCurrentTaskId('');
-  };
-
-  const submitTask = () => {
-    if (!edit) {
-      addTask(id, value);
-      setIsEditMode(false);
-      setEdit(false);
-      setValue('');
-    } else {
-      editTask(id, currentTaskId, value);
-      setIsEditMode(false);
-    }
-    setCurrentTaskId('');
-  };
-
-  const rejectAddNewTask = () => {
-    setIsEditMode(false);
-    setEdit(false);
-    setValue('');
-    setCurrentTaskId('');
-  };
-
-  const { ref } = useOnClickOutside(rejectAddNewTask);
-
-  const deleteItem = (taskId: string) => {
-    deleteTask(id, taskId);
-  };
-
-  const editItem = (taskId: string) => {
-    setIsEditMode(true);
-    setEdit(true);
-    const taskById = tasks.find(item => item.id === taskId);
-    setValue(taskById!.text);
-    setCurrentTaskId(taskId);
-  };
-
-  return (
-    <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
-      {type === 'current' ? (
-        <p>{day}</p>
-      ) : (
-        <p>
-          {day}, {month}
-        </p>
-      )}
-      {type === 'current' && (
-        <>
-          <div className={taskWrapper}>
-            {isEditMode && (
-              <>
-                <input
-                  value={value}
-                  name="task"
-                  className={input}
-                  onChange={e => setValue(e.target.value)}
-                />
-                <div className={buttonSet}>
-                  <Button
-                    disabled={isEditMode && value.trim().length === 0}
-                    onClick={submitTask}
-                  >
-                    Ok
-                  </Button>
-                  <Button onClick={rejectAddNewTask}>Cancel</Button>
-                </div>
-              </>
-            )}
-            <SortableContext
-              items={tasks}
-              strategy={verticalListSortingStrategy}
-            >
-              {tasks.map(item => (
-                <Task
-                  key={item.id}
-                  item={item}
-                  editItem={editItem}
-                  deleteItem={deleteItem}
-                />
-              ))}
-            </SortableContext>
-          </div>
-          <div className={btnWrapper}>
-            <Button disabled={isEditMode} onClick={openInput} type="button">
-              Add new task
-            </Button>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
+const dayAndHolidayWrapper = css({
+  display: 'flex',
+  gap: '4px',
+});

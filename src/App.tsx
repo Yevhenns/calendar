@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import { css } from '@emotion/css';
@@ -6,6 +7,7 @@ import './App.css';
 import { CalendarBody, CalendarHead } from './components/calendar';
 import { IconButton } from './components/shared/IconButton';
 import { useCalendar } from './hooks/useCalendar';
+import { fetchHolidays } from './utils/fetchHolidays';
 
 const navigation = css({
   display: 'flex',
@@ -15,6 +17,8 @@ const navigation = css({
 });
 
 function App() {
+  const [holidays, setHolidays] = useState<Holidays[]>([]);
+
   const {
     finalDaysArray,
     currentMonthName,
@@ -22,6 +26,17 @@ function App() {
     incrementMonth,
     decrementMonth,
   } = useCalendar();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchHolidays();
+      if (data) {
+        setHolidays(data);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -37,7 +52,7 @@ function App() {
         </IconButton>
       </div>
       <CalendarHead />
-      <CalendarBody finalDaysArray={finalDaysArray} />
+      <CalendarBody finalDaysArray={finalDaysArray} holidays={holidays} />
     </div>
   );
 }

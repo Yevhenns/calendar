@@ -17,6 +17,7 @@ import { CalendarDay } from './CalendarDay';
 
 interface CalendarBodyBody {
   finalDaysArray?: CalendarMonth;
+  holidays: Holidays[];
 }
 
 const monthWrapper = css({
@@ -30,7 +31,7 @@ const weekWrapper = css({
   gap: '4px',
 });
 
-export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
+export function CalendarBody({ finalDaysArray, holidays }: CalendarBodyBody) {
   const [items, setItems] = useState<CalendarMonth>([]);
 
   const sensors = useSensors(
@@ -132,6 +133,7 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
               {item.map((dayItem, index) => {
                 return (
                   <CalendarDay
+                    holidays={holidays}
                     key={index}
                     dayItem={dayItem}
                     index={index}
