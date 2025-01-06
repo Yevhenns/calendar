@@ -30,6 +30,7 @@ const weekWrapper = css({
 
 export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
   const [items, setItems] = useState<CalendarMonth>([]);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -100,6 +101,7 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
                     key={index}
                     dayItem={dayItem}
                     addTask={addTask}
+                    index={index}
                   />
                 );
               })}

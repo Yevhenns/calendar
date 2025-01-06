@@ -13,11 +13,20 @@ export function useCalendar() {
   const numberOfDays = dayjs(`${year}-${currentMonth}`).daysInMonth();
   const firstDayIs = dayjs(`${year}-${currentMonth}-01`).day();
 
-  const prevMonthDate = dayjs()
+  const prevMonthName = dayjs()
     .month(Number(currentMonth) - 2)
     .format('MMMM');
+  const currentPrevMonth = dayjs()
+    .month(Number(currentMonth) - 2)
+    .format('MM');
   const prevMonth = new Date(year, Number(currentMonth) - 1);
   const prevMonthDaysCount = dayjs(prevMonth).daysInMonth();
+  const prevMonthFirstDay = new Date(`${year}-${currentMonth}-01`);
+  const prevYear = prevMonthFirstDay.getFullYear();
+
+  const nextMonthFirstDay = new Date(`${year}-${currentMonth}-01`);
+  const nextMonth = nextMonthFirstDay.getMonth() + 2;
+  const nextYear = nextMonthFirstDay.getFullYear();
 
   const incrementMonth = () => {
     const firstDayOfMonth = new Date(`${year}-${currentMonth}-01`);
@@ -32,6 +41,7 @@ export function useCalendar() {
     const date = new Date(
       firstDayOfMonth.setDate(firstDayOfMonth.getDate() - prevMonthDaysCount)
     );
+
     setDateToday(date);
   };
 
@@ -39,10 +49,10 @@ export function useCalendar() {
     const prevMonthDayArray = [];
     for (let i = prevMonthDaysCount; i > prevMonthDaysCount - firstDayIs; i--) {
       prevMonthDayArray.push({
-        id: `${i}-${prevMonthDate}`,
+        id: dayjs(`${prevYear}-${currentPrevMonth}-${i}`).format('YYYY-MM-DD'),
         day: i,
         type: 'prev',
-        month: prevMonthDate,
+        month: prevMonthName,
         tasks: [],
       });
     }
@@ -50,7 +60,7 @@ export function useCalendar() {
     const currentMonthDaysArray = [];
     for (let i = 1; i <= numberOfDays; i++) {
       currentMonthDaysArray.push({
-        id: `${i}-${currentMonthName}`,
+        id: dayjs(`${year}-${currentMonth}-${i}`).format('YYYY-MM-DD'),
         day: i,
         type: 'current',
         month: currentMonthName,
@@ -71,15 +81,15 @@ export function useCalendar() {
     const nextMonthDays =
       finalDaysArray.length * 7 - finalDaysArray.flat().length;
 
-    const nextMonthDate = dayjs().month(Number(currentMonth)).format('MMMM');
+    const nextMonthName = dayjs().month(Number(currentMonth)).format('MMMM');
 
     if (nextMonthDays !== 7) {
       for (let i = 1; i <= nextMonthDays; i++) {
         finalDaysArray[finalDaysArray.length - 1].push({
-          id: `${i}-${nextMonthDate}`,
+          id: dayjs(`${nextYear}-${nextMonth}-${i}`).format('YYYY-MM-DD'),
           day: i,
           type: 'next',
-          month: nextMonthDate,
+          month: nextMonthName,
           tasks: [],
         });
       }
@@ -89,10 +99,15 @@ export function useCalendar() {
   }, [
     currentMonth,
     currentMonthName,
+    currentPrevMonth,
     firstDayIs,
+    nextMonth,
+    nextYear,
     numberOfDays,
-    prevMonthDate,
     prevMonthDaysCount,
+    prevMonthName,
+    prevYear,
+    year,
   ]);
 
   return {

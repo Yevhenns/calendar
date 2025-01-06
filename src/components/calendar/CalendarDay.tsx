@@ -7,19 +7,43 @@ import {
 } from '@dnd-kit/sortable';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared/Button';
+import dayjs from 'dayjs';
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
   addTask: (dayId: string, value: string) => void;
+  index: number;
 }
 
-const dayWrapper = (type: CalendarDay['type']) =>
+const dayWrapper = ({
+  type,
+  isDayToday,
+  isWeekend,
+}: {
+  type: CalendarDay['type'];
+  isDayToday: boolean;
+  isWeekend: boolean;
+}) =>
   css({
     padding: '4px',
     textAlign: 'left',
     width: '150px',
     height: '150px',
-    backgroundColor: type === 'current' ? '#FFEBCD' : '#F0F8FF',
+    ...(type === 'current'
+      ? {
+          backgroundColor: '#FFEBCD',
+        }
+      : {
+          backgroundColor: '#F0F8FF',
+        }),
+    ...(isDayToday && {
+      backgroundColor: '#DCDCDC',
+      border: '1px solid #000',
+    }),
+    ...(isWeekend &&
+      !isDayToday && {
+        backgroundColor: '#90EE90',
+      }),
     borderRadius: '4px',
     display: 'flex',
     flexDirection: 'column',
@@ -59,11 +83,14 @@ const input = css({
   borderRadius: '4px',
 });
 
-export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
+export function CalendarDay({ dayItem, addTask, index }: CalendarDayProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [value, setValue] = useState('');
 
   const { id, day, month, type, tasks } = dayItem;
+
+  const isDayToday = dayjs().format('YYYY-MM-DD') === id;
+  const isWeekend = index === 0 || index === 6;
 
   const openInput = () => {
     setIsEditMode(true);
@@ -83,7 +110,7 @@ export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
   const { ref } = useOnClickOutside(rejectAddNewTask);
 
   return (
-    <div ref={ref} className={dayWrapper(type)}>
+    <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
       {type === 'current' ? (
         <p>{day}</p>
       ) : (
