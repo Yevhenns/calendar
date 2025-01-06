@@ -1,5 +1,6 @@
-import { months } from '../../assets/months';
 import { css } from '@emotion/css';
+
+import { months } from '../../assets/months';
 
 const headWrapper = css({
   display: 'flex',
