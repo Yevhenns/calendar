@@ -13,8 +13,9 @@ import { Task } from '../task/Task';
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
-  addTask: (dayId: string, value: string) => void;
   index: number;
+  addTask: (dayId: string, value: string) => void;
+  deleteTask: (dayId: string, taskId: string) => void;
 }
 
 const dayWrapper = ({
@@ -85,7 +86,12 @@ const input = css({
   borderRadius: '4px',
 });
 
-export function CalendarDay({ dayItem, addTask, index }: CalendarDayProps) {
+export function CalendarDay({
+  dayItem,
+  addTask,
+  deleteTask,
+  index,
+}: CalendarDayProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [value, setValue] = useState('');
 
@@ -110,6 +116,12 @@ export function CalendarDay({ dayItem, addTask, index }: CalendarDayProps) {
   };
 
   const { ref } = useOnClickOutside(rejectAddNewTask);
+
+  const deleteItem = (taskId: string) => {
+    console.log(taskId);
+
+    deleteTask(id, taskId);
+  };
 
   return (
     <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
@@ -146,7 +158,7 @@ export function CalendarDay({ dayItem, addTask, index }: CalendarDayProps) {
               strategy={verticalListSortingStrategy}
             >
               {tasks.map(item => (
-                <Task key={item.id} item={item} />
+                <Task key={item.id} item={item} deleteItem={deleteItem} />
               ))}
             </SortableContext>
           </div>

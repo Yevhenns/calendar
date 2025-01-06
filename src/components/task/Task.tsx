@@ -10,9 +10,10 @@ import { IconButton } from '../shared/IconButton';
 
 interface TaskProps {
   item: Task;
+  deleteItem: (taskId: string) => void;
 }
 
-export function Task({ item }: TaskProps) {
+export function Task({ item, deleteItem }: TaskProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const btnWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -44,6 +45,7 @@ export function Task({ item }: TaskProps) {
     position: 'absolute',
     top: 0,
     right: isHovered ? '0' : '-60px',
+    zIndex: isHovered ? 9 : 0,
     display: 'flex',
     gap: '4px',
     transition: 'right 0.3s linear',
@@ -57,6 +59,13 @@ export function Task({ item }: TaskProps) {
     setIsHovered(false);
   };
 
+  const handleDeleteItem = (e: any) => {
+    e.stopPropagation();
+    console.log(item);
+
+    deleteItem(item.id);
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -66,13 +75,14 @@ export function Task({ item }: TaskProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      <div>a</div>
       <p className={text}>{item.text}</p>
 
       <div ref={btnWrapperRef} className={btnWrapper}>
         <IconButton>
           <CiEdit size={24} color="#000" />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={handleDeleteItem}>
           <TiDelete size={24} color="#000" />
         </IconButton>
       </div>

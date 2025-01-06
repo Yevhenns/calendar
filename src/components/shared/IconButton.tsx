@@ -18,7 +18,7 @@ const button = css({
 
 export function IconButton({ children, ...props }: IconButtonProps) {
   return (
-    <button className={button} {...props}>
+    <button type="button" className={button} {...props}>
       {children}
     </button>
   );

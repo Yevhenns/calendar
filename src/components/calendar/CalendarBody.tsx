@@ -58,6 +58,23 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     });
   };
 
+  const deleteTask = (dayId: string, taskId: string) => {
+    setItems(prevItems => {
+      const updatedDays = prevItems.map(week => {
+        return week.map(day => {
+          if (day.id === dayId) {
+            const filteredArray = day.tasks.filter(item => item.id !== taskId);
+            console.log(filteredArray);
+
+            return { ...day, tasks: filteredArray };
+          }
+          return day;
+        });
+      });
+      return updatedDays;
+    });
+  };
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
@@ -100,8 +117,9 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
                   <CalendarDay
                     key={index}
                     dayItem={dayItem}
-                    addTask={addTask}
                     index={index}
+                    addTask={addTask}
+                    deleteTask={deleteTask}
                   />
                 );
               })}
