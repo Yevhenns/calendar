@@ -80,7 +80,7 @@ export function CalendarDay({ dayItem, addTask }: CalendarDayProps) {
     setValue('');
   };
 
-  const { ref } = useOnClickOutside(() => setIsEditMode(false));
+  const { ref } = useOnClickOutside(rejectAddNewTask);
 
   return (
     <div ref={ref} className={dayWrapper(type)}>
