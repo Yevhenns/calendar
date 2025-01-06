@@ -1,8 +1,12 @@
 import { useRef, useState } from 'react';
+import { CiEdit } from 'react-icons/ci';
+import { TiDelete } from 'react-icons/ti';
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { css } from '@emotion/css';
+
+import { IconButton } from '../shared/IconButton';
 
 interface TaskProps {
   item: Task;
@@ -39,7 +43,7 @@ export function Task({ item }: TaskProps) {
   const btnWrapper = css({
     position: 'absolute',
     top: 0,
-    right: isHovered ? '0' : '-50px',
+    right: isHovered ? '0' : '-60px',
     display: 'flex',
     gap: '4px',
     transition: 'right 0.3s linear',
@@ -65,8 +69,12 @@ export function Task({ item }: TaskProps) {
       <p className={text}>{item.text}</p>
 
       <div ref={btnWrapperRef} className={btnWrapper}>
-        <button>/</button>
-        <button>X</button>
+        <IconButton>
+          <CiEdit size={24} color="#000" />
+        </IconButton>
+        <IconButton>
+          <TiDelete size={24} color="#000" />
+        </IconButton>
       </div>
     </div>
   );

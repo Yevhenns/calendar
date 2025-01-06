@@ -28,3 +28,7 @@ p,
 h3 {
   margin: 0;
 }
+
+svg {
+  display: block;
+}
