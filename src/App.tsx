@@ -1,8 +1,11 @@
-import { CalendarBody, CalendarHead } from './components/calendar';
-import { useCalendar } from './hooks/useCalendar';
-import './App.css';
-import { Button } from './components/shared/Button';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+
 import { css } from '@emotion/css';
+
+import './App.css';
+import { CalendarBody, CalendarHead } from './components/calendar';
+import { IconButton } from './components/shared/IconButton';
+import { useCalendar } from './hooks/useCalendar';
 
 const navigation = css({
   display: 'flex',
@@ -23,11 +26,15 @@ function App() {
   return (
     <div>
       <div className={navigation}>
-        <Button onClick={decrementMonth}>Prev</Button>
+        <IconButton onClick={decrementMonth}>
+          <FaChevronLeft size={24} />
+        </IconButton>
         <h3>
           {currentMonthName} {year}
         </h3>
-        <Button onClick={incrementMonth}>Next</Button>
+        <IconButton onClick={incrementMonth}>
+          <FaChevronRight size={24} />
+        </IconButton>
       </div>
       <CalendarHead />
       <CalendarBody finalDaysArray={finalDaysArray} />

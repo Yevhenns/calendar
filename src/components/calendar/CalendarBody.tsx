@@ -1,17 +1,19 @@
-import { css } from '@emotion/css';
-import { CalendarDay } from './CalendarDay';
+import { useEffect, useState } from 'react';
+
 import {
-  closestCenter,
   DndContext,
   DragEndEvent,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { css } from '@emotion/css';
+import { nanoid } from 'nanoid';
+
+import { CalendarDay } from './CalendarDay';
 
 interface CalendarBodyBody {
   finalDaysArray?: CalendarMonth;
@@ -30,6 +32,7 @@ const weekWrapper = css({
 
 export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
   const [items, setItems] = useState<CalendarMonth>([]);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -55,27 +58,59 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     });
   };
 
+  const editTask = (dayId: string, taskId: string, value: string) => {
+    const task = {
+      id: taskId,
+      text: value,
+    };
+    setItems(prevItems => {
+      const updatedDays = prevItems.map(week => {
+        return week.map(day => {
+          if (day.id === dayId) {
+            const filteredArray = day.tasks.filter(item => item.id !== taskId);
+            return { ...day, tasks: [...filteredArray, task] };
+          }
+          return day;
+        });
+      });
+      return updatedDays;
+    });
+  };
+
+  const deleteTask = (dayId: string, taskId: string) => {
+    setItems(prevItems => {
+      const updatedDays = prevItems.map(week => {
+        return week.map(day => {
+          if (day.id === dayId) {
+            const filteredArray = day.tasks.filter(item => item.id !== taskId);
+            return { ...day, tasks: filteredArray };
+          }
+          return day;
+        });
+      });
+      return updatedDays;
+    });
+  };
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
-      setItems(month => {
-        return month.map(week => {
-          return week.map(day => {
-            const oldIndex = day.tasks.findIndex(task => task.id === active.id);
-            const newIndex = day.tasks.findIndex(task => task.id === over?.id);
+    if (!over || active.id === over.id) return;
 
-            if (oldIndex !== -1 && newIndex !== -1) {
-              const updatedTasks = arrayMove(day.tasks, oldIndex, newIndex);
+    setItems(month => {
+      return month.map(week => {
+        return week.map(day => {
+          const oldIndex = day.tasks.findIndex(task => task.id === active.id);
+          const newIndex = day.tasks.findIndex(task => task.id === over?.id);
 
-              return { ...day, tasks: updatedTasks };
-            }
-
-            return day;
-          });
+          if (oldIndex !== -1 && newIndex !== -1) {
+            const updatedTasks = arrayMove(day.tasks, oldIndex, newIndex);
+            return { ...day, tasks: updatedTasks };
+          }
+          return day;
         });
       });
-    }
+    });
   }
 
   useEffect(() => {
@@ -99,7 +134,10 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
                   <CalendarDay
                     key={index}
                     dayItem={dayItem}
+                    index={index}
                     addTask={addTask}
+                    editTask={editTask}
+                    deleteTask={deleteTask}
                   />
                 );
               })}
