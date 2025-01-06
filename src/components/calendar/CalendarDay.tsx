@@ -86,11 +86,13 @@ export function CalendarDay({
       {type === 'current' ? (
         <div className={dayAndHolidayWrapper}>
           <p>{day}</p>
-          <div className={holidayWrapper}>
-            {filteredHolidays.map(item => (
-              <p key={nanoid()}>{item.name}</p>
-            ))}
-          </div>
+          {filteredHolidays.length > 0 && (
+            <div className={holidayWrapper}>
+              {filteredHolidays.map(item => (
+                <p key={nanoid()}>{item.name}</p>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <p>
