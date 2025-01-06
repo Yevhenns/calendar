@@ -61,24 +61,22 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
-      setItems(month => {
-        return month.map(week => {
-          return week.map(day => {
-            const oldIndex = day.tasks.findIndex(task => task.id === active.id);
-            const newIndex = day.tasks.findIndex(task => task.id === over?.id);
+    if (!over || active.id === over.id) return;
 
-            if (oldIndex !== -1 && newIndex !== -1) {
-              const updatedTasks = arrayMove(day.tasks, oldIndex, newIndex);
+    setItems(month => {
+      return month.map(week => {
+        return week.map(day => {
+          const oldIndex = day.tasks.findIndex(task => task.id === active.id);
+          const newIndex = day.tasks.findIndex(task => task.id === over?.id);
 
-              return { ...day, tasks: updatedTasks };
-            }
-
-            return day;
-          });
+          if (oldIndex !== -1 && newIndex !== -1) {
+            const updatedTasks = arrayMove(day.tasks, oldIndex, newIndex);
+            return { ...day, tasks: updatedTasks };
+          }
+          return day;
         });
       });
-    }
+    });
   }
 
   useEffect(() => {
