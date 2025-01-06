@@ -6,6 +6,7 @@ import {
 } from '@dnd-kit/sortable';
 import { css } from '@emotion/css';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared/Button';
@@ -39,7 +40,6 @@ export function CalendarDay({
   const isWeekend = index === 0 || index === 6;
 
   const filteredHolidays = holidays.filter(item => item.date === id);
-  console.log(filteredHolidays);
 
   const openInput = () => {
     setIsEditMode(true);
@@ -86,9 +86,9 @@ export function CalendarDay({
       {type === 'current' ? (
         <div className={dayAndHolidayWrapper}>
           <p>{day}</p>
-          <div>
+          <div className={holidayWrapper}>
             {filteredHolidays.map(item => (
-              <p>{item.name}</p>
+              <p key={nanoid()}>{item.name}</p>
             ))}
           </div>
         </div>
@@ -157,7 +157,7 @@ const dayWrapper = ({
     padding: '4px',
     textAlign: 'left',
     width: '200px',
-    height: '150px',
+    height: '300px',
     ...(type === 'current'
       ? {
           backgroundColor: '#FFEBCD',
@@ -215,4 +215,9 @@ const input = css({
 const dayAndHolidayWrapper = css({
   display: 'flex',
   gap: '4px',
+});
+
+const holidayWrapper = css({
+  overflowY: 'scroll',
+  height: '24px',
 });
