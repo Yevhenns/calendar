@@ -58,6 +58,25 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     });
   };
 
+  const editTask = (dayId: string, taskId: string, value: string) => {
+    const task = {
+      id: taskId,
+      text: value,
+    };
+    setItems(prevItems => {
+      const updatedDays = prevItems.map(week => {
+        return week.map(day => {
+          if (day.id === dayId) {
+            const filteredArray = day.tasks.filter(item => item.id !== taskId);
+            return { ...day, tasks: [...filteredArray, task] };
+          }
+          return day;
+        });
+      });
+      return updatedDays;
+    });
+  };
+
   const deleteTask = (dayId: string, taskId: string) => {
     setItems(prevItems => {
       const updatedDays = prevItems.map(week => {
@@ -117,6 +136,7 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
                     dayItem={dayItem}
                     index={index}
                     addTask={addTask}
+                    editTask={editTask}
                     deleteTask={deleteTask}
                   />
                 );

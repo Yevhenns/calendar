@@ -11,10 +11,11 @@ import { IconButton } from '../shared/IconButton';
 
 interface TaskProps {
   item: Task;
+  editItem: (taskId: string) => void;
   deleteItem: (taskId: string) => void;
 }
 
-export function Task({ item, deleteItem }: TaskProps) {
+export function Task({ item, editItem, deleteItem }: TaskProps) {
   const btnWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -54,6 +55,10 @@ export function Task({ item, deleteItem }: TaskProps) {
     transition: 'right 0.3s linear',
   });
 
+  const handleEditItem = () => {
+    editItem(item.id);
+  };
+
   const handleDeleteItem = () => {
     deleteItem(item.id);
   };
@@ -65,7 +70,7 @@ export function Task({ item, deleteItem }: TaskProps) {
           <MdOutlineDragIndicator size={24} />
         </div>
         <div ref={btnWrapperRef} className={btnWrapper}>
-          <IconButton>
+          <IconButton onClick={handleEditItem}>
             <CiEdit size={24} color="#000" />
           </IconButton>
           <IconButton onClick={handleDeleteItem}>

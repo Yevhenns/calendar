@@ -15,6 +15,7 @@ interface CalendarDayProps {
   dayItem: CalendarDay;
   index: number;
   addTask: (dayId: string, value: string) => void;
+  editTask: (dayId: string, taskId: string, value: string) => void;
   deleteTask: (dayId: string, taskId: string) => void;
 }
 
@@ -88,12 +89,15 @@ const input = css({
 
 export function CalendarDay({
   dayItem,
-  addTask,
-  deleteTask,
   index,
+  addTask,
+  editTask,
+  deleteTask,
 }: CalendarDayProps) {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [value, setValue] = useState('');
+  const [currentTaskId, setCurrentTaskId] = useState('');
 
   const { id, day, month, type, tasks } = dayItem;
 
@@ -102,23 +106,42 @@ export function CalendarDay({
 
   const openInput = () => {
     setIsEditMode(true);
+    setEdit(false);
+    setCurrentTaskId('');
   };
 
-  const addNewTask = () => {
-    addTask(id, value);
-    setIsEditMode(false);
-    setValue('');
+  const submitTask = () => {
+    if (!edit) {
+      addTask(id, value);
+      setIsEditMode(false);
+      setEdit(false);
+      setValue('');
+    } else {
+      editTask(id, currentTaskId, value);
+      setIsEditMode(false);
+    }
+    setCurrentTaskId('');
   };
 
   const rejectAddNewTask = () => {
     setIsEditMode(false);
+    setEdit(false);
     setValue('');
+    setCurrentTaskId('');
   };
 
   const { ref } = useOnClickOutside(rejectAddNewTask);
 
   const deleteItem = (taskId: string) => {
     deleteTask(id, taskId);
+  };
+
+  const editItem = (taskId: string) => {
+    setIsEditMode(true);
+    setEdit(true);
+    const taskById = tasks.find(item => item.id === taskId);
+    setValue(taskById!.text);
+    setCurrentTaskId(taskId);
   };
 
   return (
@@ -136,6 +159,7 @@ export function CalendarDay({
             {isEditMode && (
               <>
                 <input
+                  value={value}
                   name="task"
                   className={input}
                   onChange={e => setValue(e.target.value)}
@@ -143,7 +167,7 @@ export function CalendarDay({
                 <div className={buttonSet}>
                   <Button
                     disabled={isEditMode && value.trim().length === 0}
-                    onClick={addNewTask}
+                    onClick={submitTask}
                   >
                     Ok
                   </Button>
@@ -156,7 +180,12 @@ export function CalendarDay({
               strategy={verticalListSortingStrategy}
             >
               {tasks.map(item => (
-                <Task key={item.id} item={item} deleteItem={deleteItem} />
+                <Task
+                  key={item.id}
+                  item={item}
+                  editItem={editItem}
+                  deleteItem={deleteItem}
+                />
               ))}
             </SortableContext>
           </div>
