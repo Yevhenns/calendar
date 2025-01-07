@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useDroppable } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -39,6 +40,10 @@ export function CalendarDay({
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
   const { id, type, tasks } = dayItem;
+
+  const { setNodeRef } = useDroppable({
+    id,
+  });
 
   const SATURDAY = 6;
   const SUNDAY = 0;
@@ -109,24 +114,25 @@ export function CalendarDay({
               handleInputChange={handleInputChange}
             />
             <SortableContext
+              id={id}
               items={filteredTasks}
               strategy={verticalListSortingStrategy}
             >
-              {filteredTasks.map(item => (
-                <Task
-                  key={item.id}
-                  item={item}
-                  editItem={editItem}
-                  deleteItem={deleteItem}
-                />
-              ))}
+              <div className={tasksList} ref={setNodeRef}>
+                {filteredTasks.map(item => (
+                  <Task
+                    key={item.id}
+                    item={item}
+                    editItem={editItem}
+                    deleteItem={deleteItem}
+                  />
+                ))}
+              </div>
             </SortableContext>
           </div>
-          <div className={btnWrapper}>
-            <Button disabled={isEditMode} onClick={openInput} type="button">
-              Add new task
-            </Button>
-          </div>
+          <Button disabled={isEditMode} onClick={openInput} type="button">
+            Add new task
+          </Button>
         </>
       )}
     </div>
@@ -174,8 +180,12 @@ const taskWrapper = css({
   gap: '4px',
   overflowY: 'scroll',
   overscrollBehavior: 'contain',
+  height: '100%',
 });
 
-const btnWrapper = css({
-  marginTop: 'auto',
+const tasksList = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+  flex: 1,
 });
