@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import { MdOutlineDeleteForever, MdOutlineDragIndicator } from 'react-icons/md';
 
@@ -15,8 +14,6 @@ interface TaskProps {
 }
 
 export function Task({ item, editItem, deleteItem }: TaskProps) {
-  const btnWrapperRef = useRef<HTMLDivElement | null>(null);
-
   const {
     attributes,
     listeners,
@@ -35,17 +32,15 @@ export function Task({ item, editItem, deleteItem }: TaskProps) {
   };
 
   return (
-    <div className={taskWrapper({ transform, transition })}>
+    <div
+      ref={setNodeRef}
+      className={taskWrapper({ transform, transition, isDragging })}
+    >
       <div className={dndWrapper}>
-        <div
-          ref={setNodeRef}
-          {...attributes}
-          {...listeners}
-          className={dnd(isDragging)}
-        >
+        <div {...attributes} {...listeners} className={dnd(isDragging)}>
           <MdOutlineDragIndicator size={24} />
         </div>
-        <div ref={btnWrapperRef} className={btnWrapper}>
+        <div className={btnWrapper}>
           <IconButton onClick={handleEditItem}>
             <FaRegEdit size={18} color="#000" />
           </IconButton>
@@ -62,9 +57,11 @@ export function Task({ item, editItem, deleteItem }: TaskProps) {
 const taskWrapper = ({
   transform,
   transition,
+  isDragging,
 }: {
   transform: Transform | null;
   transition: string | undefined;
+  isDragging: boolean;
 }) =>
   css({
     position: 'relative',
@@ -73,6 +70,7 @@ const taskWrapper = ({
     borderRadius: '4px',
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.8 : 1,
   });
 
 const dnd = (isDragging: boolean) =>
@@ -92,5 +90,4 @@ const text = css({
 const btnWrapper = css({
   display: 'flex',
   gap: '4px',
-  transition: 'right 0.3s linear',
 });
