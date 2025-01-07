@@ -4,6 +4,14 @@ import { css } from '@emotion/css';
 
 type ButtonProps = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>>;
 
+export function Button({ children, ...props }: ButtonProps) {
+  return (
+    <button className={button} {...props}>
+      {children}
+    </button>
+  );
+}
+
 const button = css({
   borderRadius: '8px',
   border: '1px solid transparent',
@@ -15,20 +23,8 @@ const button = css({
   '&:hover': {
     borderColor: '#646cff',
   },
-  '&:focus': {
-    outline: 'none',
-    borderColor: '#888',
-  },
   '&:disabled': {
     backgroundColor: '#aaa',
     cursor: 'not-allowed',
   },
 });
-
-export function Button({ children, ...props }: ButtonProps) {
-  return (
-    <button className={button} {...props}>
-      {children}
-    </button>
-  );
-}

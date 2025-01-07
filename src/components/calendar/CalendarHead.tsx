@@ -2,11 +2,6 @@ import { css } from '@emotion/css';
 
 import { months } from '../../assets/months';
 
-const headWrapper = css({
-  display: 'flex',
-  justifyContent: 'space-around',
-});
-
 export function CalendarHead() {
   return (
     <div className={headWrapper}>
@@ -16,3 +11,8 @@ export function CalendarHead() {
     </div>
   );
 }
+
+const headWrapper = css({
+  display: 'flex',
+  justifyContent: 'space-around',
+});
