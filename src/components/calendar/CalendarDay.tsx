@@ -6,11 +6,11 @@ import {
 } from '@dnd-kit/sortable';
 import { css } from '@emotion/css';
 import dayjs from 'dayjs';
-import { nanoid } from 'nanoid';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared/Button';
 import { Task } from '../task/Task';
+import { DayAndHolidays } from './DayAndHolidays';
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
@@ -34,7 +34,7 @@ export function CalendarDay({
   const [value, setValue] = useState('');
   const [currentTaskId, setCurrentTaskId] = useState('');
 
-  const { id, day, month, type, tasks } = dayItem;
+  const { id, type, tasks } = dayItem;
 
   const isDayToday = dayjs().format('YYYY-MM-DD') === id;
   const isWeekend = index === 0 || index === 6;
@@ -83,22 +83,7 @@ export function CalendarDay({
 
   return (
     <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
-      {type === 'current' ? (
-        <div className={dayAndHolidayWrapper}>
-          <p>{day}</p>
-          {filteredHolidays.length > 0 && (
-            <div className={holidayWrapper}>
-              {filteredHolidays.map(item => (
-                <p key={nanoid()}>{item.name}</p>
-              ))}
-            </div>
-          )}
-        </div>
-      ) : (
-        <p>
-          {day}, {month}
-        </p>
-      )}
+      <DayAndHolidays dayItem={dayItem} filteredHolidays={filteredHolidays} />
       {type === 'current' && (
         <>
           <div className={taskWrapper}>
@@ -212,14 +197,4 @@ const btnWrapper = css({
 const input = css({
   padding: '4px',
   borderRadius: '4px',
-});
-
-const dayAndHolidayWrapper = css({
-  display: 'flex',
-  gap: '4px',
-});
-
-const holidayWrapper = css({
-  overflowY: 'scroll',
-  height: '24px',
 });
