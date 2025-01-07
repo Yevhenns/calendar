@@ -5,7 +5,6 @@ import { css } from '@emotion/css';
 import './App.css';
 import { Calendar } from './components/calendar';
 import { IconButton } from './components/shared/IconButton';
-import { Filter } from './components/task';
 import { useCalendar } from './hooks/useCalendar';
 
 function App() {
@@ -30,7 +29,6 @@ function App() {
           <FaChevronRight size={24} />
         </IconButton>
       </div>
-      <Filter />
       <Calendar finalDaysArray={finalDaysArray} />
     </div>
   );

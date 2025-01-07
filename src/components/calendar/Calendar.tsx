@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { fetchHolidays } from '../../utils/fetchHolidays';
+import { Filter } from '../task';
 import { CalendarBody } from './CalendarBody';
 import { CalendarHead } from './CalendarHead';
 
@@ -10,6 +11,11 @@ interface CalendarProps {
 
 export function Calendar({ finalDaysArray }: CalendarProps) {
   const [holidays, setHolidays] = useState<Holidays[]>([]);
+  const [filter, setFilter] = useState('');
+
+  const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +30,7 @@ export function Calendar({ finalDaysArray }: CalendarProps) {
 
   return (
     <>
+      <Filter handleFilter={handleFilter} />
       <CalendarHead />
       <CalendarBody finalDaysArray={finalDaysArray} holidays={holidays} />
     </>
