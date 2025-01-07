@@ -6,9 +6,17 @@ type IconButtonProps = PropsWithChildren<
   ButtonHTMLAttributes<HTMLButtonElement>
 >;
 
+export function IconButton({ children, ...props }: IconButtonProps) {
+  return (
+    <button type="button" className={button} {...props}>
+      {children}
+    </button>
+  );
+}
+
 const button = css({
   borderRadius: '4px',
-  border: 'none',
+  border: '1px solid transparent',
   padding: 0,
   backgroundColor: '#DCDCDC',
   cursor: 'pointer',
@@ -17,12 +25,7 @@ const button = css({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  '&:hover': {
+    borderColor: '#646cff',
+  },
 });
-
-export function IconButton({ children, ...props }: IconButtonProps) {
-  return (
-    <button type="button" className={button} {...props}>
-      {children}
-    </button>
-  );
-}

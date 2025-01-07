@@ -5,7 +5,7 @@ import { css } from '@emotion/css';
 import { nanoid } from 'nanoid';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { IconButton } from '../shared/IconButton';
+import { IconButton } from '../shared';
 
 interface DayAndHolidaysProps {
   dayItem: CalendarDay;
@@ -41,9 +41,14 @@ export function DayAndHolidays({
               </div>
               {holidaysShown && (
                 <div ref={ref} className={holidaysList}>
-                  {filteredHolidays.map(item => (
-                    <p key={nanoid()}>{item.name}</p>
-                  ))}
+                  <p>Holidays list</p>
+                  <ul>
+                    {filteredHolidays.map(item => (
+                      <li key={nanoid()}>
+                        {item.name} - {item.countryCode}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </>
@@ -59,7 +64,6 @@ export function DayAndHolidays({
 }
 
 const dayAndHolidayWrapper = css({
-  position: 'relative',
   display: 'flex',
   gap: '4px',
 });
@@ -77,8 +81,12 @@ const holidaysList = css({
   backgroundColor: '#FFF',
   padding: '8px',
   position: 'absolute',
-  right: 0,
+  left: 0,
   top: 0,
   zIndex: 2,
   borderRadius: '4px',
+  overflowY: 'scroll',
+  overscrollBehavior: 'contain',
+  height: '100%',
+  fontSize: '14px',
 });

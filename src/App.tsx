@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 
 import './App.css';
 import { Calendar } from './components/calendar';
-import { IconButton } from './components/shared/IconButton';
+import { IconButton } from './components/shared';
 import { useCalendar } from './hooks/useCalendar';
 
 function App() {

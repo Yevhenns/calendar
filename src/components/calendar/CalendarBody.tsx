@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import {
   DndContext,
   DragEndEvent,
@@ -11,8 +9,8 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { css } from '@emotion/css';
-import { nanoid } from 'nanoid';
 
+import { useTaskActions } from '../../hooks/useTaskActions';
 import { CalendarDay } from './CalendarDay';
 
 interface CalendarBodyBody {
@@ -26,7 +24,9 @@ export function CalendarBody({
   holidays,
   filter,
 }: CalendarBodyBody) {
-  const [items, setItems] = useState<CalendarMonth>([]);
+  const { items, setItems, addTask, editTask, deleteTask } = useTaskActions({
+    finalDaysArray,
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -34,58 +34,6 @@ export function CalendarBody({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  const addTask = (dayId: string, value: string) => {
-    const task = {
-      id: nanoid(),
-      text: value,
-    };
-    setItems(prevItems => {
-      const updatedDays = prevItems.map(week => {
-        return week.map(day => {
-          if (day.id === dayId) {
-            return { ...day, tasks: [...day.tasks, task] };
-          }
-          return day;
-        });
-      });
-      return updatedDays;
-    });
-  };
-
-  const editTask = (dayId: string, taskId: string, value: string) => {
-    const task = {
-      id: taskId,
-      text: value,
-    };
-    setItems(prevItems => {
-      const updatedDays = prevItems.map(week => {
-        return week.map(day => {
-          if (day.id === dayId) {
-            const filteredArray = day.tasks.filter(item => item.id !== taskId);
-            return { ...day, tasks: [...filteredArray, task] };
-          }
-          return day;
-        });
-      });
-      return updatedDays;
-    });
-  };
-
-  const deleteTask = (dayId: string, taskId: string) => {
-    setItems(prevItems => {
-      const updatedDays = prevItems.map(week => {
-        return week.map(day => {
-          if (day.id === dayId) {
-            const filteredArray = day.tasks.filter(item => item.id !== taskId);
-            return { ...day, tasks: filteredArray };
-          }
-          return day;
-        });
-      });
-      return updatedDays;
-    });
-  };
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -107,12 +55,6 @@ export function CalendarBody({
       });
     });
   }
-
-  useEffect(() => {
-    if (finalDaysArray) {
-      setItems(finalDaysArray);
-    }
-  }, [finalDaysArray]);
 
   return (
     <DndContext
