@@ -1,7 +1,6 @@
 import { useRef } from 'react';
-import { CiEdit } from 'react-icons/ci';
-import { MdOutlineDragIndicator } from 'react-icons/md';
-import { TiDelete } from 'react-icons/ti';
+import { FaRegEdit } from 'react-icons/fa';
+import { MdOutlineDeleteForever, MdOutlineDragIndicator } from 'react-icons/md';
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -71,10 +70,10 @@ export function Task({ item, editItem, deleteItem }: TaskProps) {
         </div>
         <div ref={btnWrapperRef} className={btnWrapper}>
           <IconButton onClick={handleEditItem}>
-            <CiEdit size={24} color="#000" />
+            <FaRegEdit size={18} color="#000" />
           </IconButton>
           <IconButton onClick={handleDeleteItem}>
-            <TiDelete size={24} color="#000" />
+            <MdOutlineDeleteForever size={24} color="#000" />
           </IconButton>
         </div>
       </div>

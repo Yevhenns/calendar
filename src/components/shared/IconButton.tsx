@@ -7,7 +7,7 @@ type IconButtonProps = PropsWithChildren<
 >;
 
 const button = css({
-  borderRadius: '12px',
+  borderRadius: '4px',
   border: 'none',
   padding: 0,
   backgroundColor: '#DCDCDC',

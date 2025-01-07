@@ -20,13 +20,13 @@ function App() {
     <div>
       <div className={navigation}>
         <IconButton onClick={decrementMonth}>
-          <FaChevronLeft size={24} />
+          <FaChevronLeft size={16} />
         </IconButton>
         <h3>
           {currentMonthName} {year}
         </h3>
         <IconButton onClick={incrementMonth}>
-          <FaChevronRight size={24} />
+          <FaChevronRight size={16} />
         </IconButton>
       </div>
       <Calendar finalDaysArray={finalDaysArray} />
