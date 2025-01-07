@@ -2,7 +2,7 @@ import { TiDelete } from 'react-icons/ti';
 
 import { css } from '@emotion/css';
 
-import { IconButton } from '../shared/IconButton';
+import { IconButton } from '../shared';
 
 interface FilterProps {
   handleFilter: (e: React.ChangeEvent<HTMLInputElement>) => void;

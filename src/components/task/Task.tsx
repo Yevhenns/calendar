@@ -6,7 +6,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { css } from '@emotion/css';
 
-import { IconButton } from '../shared/IconButton';
+import { IconButton } from '../shared';
 
 interface TaskProps {
   item: Task;

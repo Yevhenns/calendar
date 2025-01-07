@@ -5,7 +5,7 @@ import { css } from '@emotion/css';
 import { nanoid } from 'nanoid';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { IconButton } from '../shared/IconButton';
+import { IconButton } from '../shared';
 
 interface DayAndHolidaysProps {
   dayItem: CalendarDay;

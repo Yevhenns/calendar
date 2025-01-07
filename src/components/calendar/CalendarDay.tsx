@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import dayjs from 'dayjs';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { Button } from '../shared/Button';
+import { Button } from '../shared';
 import { Task } from '../task';
 import { DayAndHolidays } from './DayAndHolidays';
 import { EditForm } from './EditForm';

@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 
-import { Button } from '../shared/Button';
+import { Button } from '../shared';
 
 interface EditFormProps {
   isEditMode: boolean;
