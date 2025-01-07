@@ -40,7 +40,11 @@ export function Calendar({ finalDaysArray }: CalendarProps) {
         clearFilter={clearFilter}
       />
       <CalendarHead />
-      <CalendarBody finalDaysArray={finalDaysArray} holidays={holidays} />
+      <CalendarBody
+        finalDaysArray={finalDaysArray}
+        holidays={holidays}
+        filter={filter}
+      />
     </>
   );
 }

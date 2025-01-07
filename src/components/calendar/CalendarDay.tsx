@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   SortableContext,
@@ -20,6 +20,7 @@ interface CalendarDayProps {
   editTask: (dayId: string, taskId: string, value: string) => void;
   deleteTask: (dayId: string, taskId: string) => void;
   holidays: Holidays[];
+  filter: string;
 }
 
 export function CalendarDay({
@@ -29,16 +30,20 @@ export function CalendarDay({
   editTask,
   deleteTask,
   holidays,
+  filter,
 }: CalendarDayProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [edit, setEdit] = useState(false);
   const [value, setValue] = useState('');
   const [currentTaskId, setCurrentTaskId] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
   const { id, type, tasks } = dayItem;
 
+  const SATURDAY = 6;
+  const SUNDAY = 0;
+  const isWeekend = index === SATURDAY || index === SUNDAY;
   const isDayToday = dayjs().format('YYYY-MM-DD') === id;
-  const isWeekend = index === 0 || index === 6;
 
   const filteredHolidays = holidays.filter(item => item.date === id);
 
@@ -86,6 +91,10 @@ export function CalendarDay({
     setValue(e.target.value);
   };
 
+  useEffect(() => {
+    setFilteredTasks(tasks.filter(item => item.text.includes(filter)));
+  }, [filter, tasks]);
+
   return (
     <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
       <DayAndHolidays dayItem={dayItem} filteredHolidays={filteredHolidays} />
@@ -100,10 +109,10 @@ export function CalendarDay({
               handleInputChange={handleInputChange}
             />
             <SortableContext
-              items={tasks}
+              items={filteredTasks}
               strategy={verticalListSortingStrategy}
             >
-              {tasks.map(item => (
+              {filteredTasks.map(item => (
                 <Task
                   key={item.id}
                   item={item}
