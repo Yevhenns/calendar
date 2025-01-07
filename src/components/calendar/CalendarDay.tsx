@@ -67,6 +67,7 @@ export function CalendarDay({
     } else {
       editTask(id, currentTaskId, value);
       setIsEditMode(false);
+      setValue('');
     }
     setCurrentTaskId('');
   };
