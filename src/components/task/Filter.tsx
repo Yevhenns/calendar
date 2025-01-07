@@ -6,14 +6,21 @@ import { IconButton } from '../shared/IconButton';
 
 interface FilterProps {
   handleFilter: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  clearFilter: () => void;
+  filter: string;
 }
 
-export function Filter({ handleFilter }: FilterProps) {
+export function Filter({ handleFilter, clearFilter, filter }: FilterProps) {
   return (
     <div className={filterWrapper}>
       <p>Filter</p>
-      <input name="filter" onChange={e => handleFilter(e)} className={input} />
-      <IconButton>
+      <input
+        name="filter"
+        value={filter}
+        onChange={e => handleFilter(e)}
+        className={input}
+      />
+      <IconButton onClick={clearFilter}>
         <TiDelete size={24} color="#000" />
       </IconButton>
     </div>

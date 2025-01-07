@@ -17,6 +17,10 @@ export function Calendar({ finalDaysArray }: CalendarProps) {
     setFilter(e.target.value);
   };
 
+  const clearFilter = () => {
+    setFilter('');
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchHolidays();
@@ -30,7 +34,11 @@ export function Calendar({ finalDaysArray }: CalendarProps) {
 
   return (
     <>
-      <Filter handleFilter={handleFilter} />
+      <Filter
+        filter={filter}
+        handleFilter={handleFilter}
+        clearFilter={clearFilter}
+      />
       <CalendarHead />
       <CalendarBody finalDaysArray={finalDaysArray} holidays={holidays} />
     </>
