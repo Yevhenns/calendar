@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared/Button';
-import { Task } from '../task/Task';
+import { Task } from '../task';
 import { DayAndHolidays } from './DayAndHolidays';
 import { EditForm } from './EditForm';
 

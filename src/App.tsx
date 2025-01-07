@@ -1,24 +1,14 @@
-import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import { css } from '@emotion/css';
 
 import './App.css';
-import { CalendarBody, CalendarHead } from './components/calendar';
+import { Calendar } from './components/calendar';
 import { IconButton } from './components/shared/IconButton';
+import { Filter } from './components/task';
 import { useCalendar } from './hooks/useCalendar';
-import { fetchHolidays } from './utils/fetchHolidays';
-
-const navigation = css({
-  display: 'flex',
-  gap: '8px',
-  justifyContent: 'center',
-  marginBottom: '16px',
-});
 
 function App() {
-  const [holidays, setHolidays] = useState<Holidays[]>([]);
-
   const {
     finalDaysArray,
     currentMonthName,
@@ -26,17 +16,6 @@ function App() {
     incrementMonth,
     decrementMonth,
   } = useCalendar();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchHolidays();
-      if (data) {
-        setHolidays(data);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div>
@@ -51,10 +30,17 @@ function App() {
           <FaChevronRight size={24} />
         </IconButton>
       </div>
-      <CalendarHead />
-      <CalendarBody finalDaysArray={finalDaysArray} holidays={holidays} />
+      <Filter />
+      <Calendar finalDaysArray={finalDaysArray} />
     </div>
   );
 }
 
 export default App;
+
+const navigation = css({
+  display: 'flex',
+  gap: '8px',
+  justifyContent: 'center',
+  marginBottom: '16px',
+});
