@@ -6,12 +6,11 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { css } from '@emotion/css';
-import dayjs from 'dayjs';
 
-import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared';
 import { Task } from '../task';
 import { DayAndHolidays } from './DayAndHolidays';
+import { DayWrapper } from './DayWrapper';
 import { EditForm } from './EditForm';
 
 interface CalendarDayProps {
@@ -45,11 +44,6 @@ export function CalendarDay({
     id,
   });
 
-  const SATURDAY = 6;
-  const SUNDAY = 0;
-  const isWeekend = index === SATURDAY || index === SUNDAY;
-  const isDayToday = dayjs().format('YYYY-MM-DD') === id;
-
   const filteredHolidays = holidays.filter(item => item.date === id);
 
   const openInput = () => {
@@ -79,8 +73,6 @@ export function CalendarDay({
     setCurrentTaskId('');
   };
 
-  const { ref } = useOnClickOutside(rejectAddNewTask);
-
   const deleteItem = (taskId: string) => {
     deleteTask(id, taskId);
   };
@@ -102,7 +94,12 @@ export function CalendarDay({
   }, [filter, tasks]);
 
   return (
-    <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
+    <DayWrapper
+      id={id}
+      type={type}
+      index={index}
+      rejectAddNewTask={rejectAddNewTask}
+    >
       <DayAndHolidays dayItem={dayItem} filteredHolidays={filteredHolidays} />
       {type === 'current' && (
         <>
@@ -136,45 +133,9 @@ export function CalendarDay({
           </Button>
         </>
       )}
-    </div>
+    </DayWrapper>
   );
 }
-
-const dayWrapper = ({
-  type,
-  isDayToday,
-  isWeekend,
-}: {
-  type: CalendarDay['type'];
-  isDayToday: boolean;
-  isWeekend: boolean;
-}) =>
-  css({
-    padding: '4px',
-    textAlign: 'left',
-    width: '200px',
-    height: '300px',
-    ...(type === 'current'
-      ? {
-          backgroundColor: '#FFEBCD',
-        }
-      : {
-          backgroundColor: '#F0F8FF',
-        }),
-    ...(isDayToday && {
-      backgroundColor: '#DCDCDC',
-      border: '1px solid #000',
-    }),
-    ...(isWeekend &&
-      !isDayToday && {
-        backgroundColor: '#90EE90',
-      }),
-    borderRadius: '4px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    position: 'relative',
-  });
 
 const taskWrapper = css({
   display: 'flex',
