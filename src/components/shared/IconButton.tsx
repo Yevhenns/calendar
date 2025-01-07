@@ -14,6 +14,9 @@ const button = css({
   cursor: 'pointer',
   width: '24px',
   height: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 export function IconButton({ children, ...props }: IconButtonProps) {
