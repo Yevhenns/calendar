@@ -7,13 +7,16 @@ type IconButtonProps = PropsWithChildren<
 >;
 
 const button = css({
-  borderRadius: '12px',
+  borderRadius: '4px',
   border: 'none',
   padding: 0,
   backgroundColor: '#DCDCDC',
   cursor: 'pointer',
   width: '24px',
   height: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 export function IconButton({ children, ...props }: IconButtonProps) {

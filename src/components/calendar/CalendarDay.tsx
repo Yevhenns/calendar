@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   SortableContext,
@@ -9,7 +9,9 @@ import dayjs from 'dayjs';
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared/Button';
-import { Task } from '../task/Task';
+import { Task } from '../task';
+import { DayAndHolidays } from './DayAndHolidays';
+import { EditForm } from './EditForm';
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
@@ -17,75 +19,9 @@ interface CalendarDayProps {
   addTask: (dayId: string, value: string) => void;
   editTask: (dayId: string, taskId: string, value: string) => void;
   deleteTask: (dayId: string, taskId: string) => void;
+  holidays: Holidays[];
+  filter: string;
 }
-
-const dayWrapper = ({
-  type,
-  isDayToday,
-  isWeekend,
-}: {
-  type: CalendarDay['type'];
-  isDayToday: boolean;
-  isWeekend: boolean;
-}) =>
-  css({
-    padding: '4px',
-    textAlign: 'left',
-    width: '200px',
-    height: '150px',
-    ...(type === 'current'
-      ? {
-          backgroundColor: '#FFEBCD',
-        }
-      : {
-          backgroundColor: '#F0F8FF',
-        }),
-    ...(isDayToday && {
-      backgroundColor: '#DCDCDC',
-      border: '1px solid #000',
-    }),
-    ...(isWeekend &&
-      !isDayToday && {
-        backgroundColor: '#90EE90',
-      }),
-    borderRadius: '4px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  });
-
-const taskWrapper = css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-  overflowY: 'scroll',
-
-  '&::-webkit-scrollbar': {
-    width: '0px',
-    height: '0px',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'transparent',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'transparent',
-  },
-});
-
-const buttonSet = css({
-  display: 'flex',
-  gap: '8px',
-  justifyContent: 'end',
-});
-
-const btnWrapper = css({
-  marginTop: 'auto',
-});
-
-const input = css({
-  padding: '4px',
-  borderRadius: '4px',
-});
 
 export function CalendarDay({
   dayItem,
@@ -93,16 +29,23 @@ export function CalendarDay({
   addTask,
   editTask,
   deleteTask,
+  holidays,
+  filter,
 }: CalendarDayProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [edit, setEdit] = useState(false);
   const [value, setValue] = useState('');
   const [currentTaskId, setCurrentTaskId] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
-  const { id, day, month, type, tasks } = dayItem;
+  const { id, type, tasks } = dayItem;
 
+  const SATURDAY = 6;
+  const SUNDAY = 0;
+  const isWeekend = index === SATURDAY || index === SUNDAY;
   const isDayToday = dayjs().format('YYYY-MM-DD') === id;
-  const isWeekend = index === 0 || index === 6;
+
+  const filteredHolidays = holidays.filter(item => item.date === id);
 
   const openInput = () => {
     setIsEditMode(true);
@@ -144,42 +87,32 @@ export function CalendarDay({
     setCurrentTaskId(taskId);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
+
+  useEffect(() => {
+    setFilteredTasks(tasks.filter(item => item.text.includes(filter)));
+  }, [filter, tasks]);
+
   return (
     <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
-      {type === 'current' ? (
-        <p>{day}</p>
-      ) : (
-        <p>
-          {day}, {month}
-        </p>
-      )}
+      <DayAndHolidays dayItem={dayItem} filteredHolidays={filteredHolidays} />
       {type === 'current' && (
         <>
           <div className={taskWrapper}>
-            {isEditMode && (
-              <>
-                <input
-                  value={value}
-                  name="task"
-                  className={input}
-                  onChange={e => setValue(e.target.value)}
-                />
-                <div className={buttonSet}>
-                  <Button
-                    disabled={isEditMode && value.trim().length === 0}
-                    onClick={submitTask}
-                  >
-                    Ok
-                  </Button>
-                  <Button onClick={rejectAddNewTask}>Cancel</Button>
-                </div>
-              </>
-            )}
+            <EditForm
+              isEditMode={isEditMode}
+              value={value}
+              submitTask={submitTask}
+              rejectAddNewTask={rejectAddNewTask}
+              handleInputChange={handleInputChange}
+            />
             <SortableContext
-              items={tasks}
+              items={filteredTasks}
               strategy={verticalListSortingStrategy}
             >
-              {tasks.map(item => (
+              {filteredTasks.map(item => (
                 <Task
                   key={item.id}
                   item={item}
@@ -199,3 +132,50 @@ export function CalendarDay({
     </div>
   );
 }
+
+const dayWrapper = ({
+  type,
+  isDayToday,
+  isWeekend,
+}: {
+  type: CalendarDay['type'];
+  isDayToday: boolean;
+  isWeekend: boolean;
+}) =>
+  css({
+    padding: '4px',
+    textAlign: 'left',
+    width: '200px',
+    height: '300px',
+    ...(type === 'current'
+      ? {
+          backgroundColor: '#FFEBCD',
+        }
+      : {
+          backgroundColor: '#F0F8FF',
+        }),
+    ...(isDayToday && {
+      backgroundColor: '#DCDCDC',
+      border: '1px solid #000',
+    }),
+    ...(isWeekend &&
+      !isDayToday && {
+        backgroundColor: '#90EE90',
+      }),
+    borderRadius: '4px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  });
+
+const taskWrapper = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+  overflowY: 'scroll',
+  overscrollBehavior: 'contain',
+});
+
+const btnWrapper = css({
+  marginTop: 'auto',
+});

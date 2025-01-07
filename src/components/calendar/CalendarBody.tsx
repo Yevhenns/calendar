@@ -17,20 +17,15 @@ import { CalendarDay } from './CalendarDay';
 
 interface CalendarBodyBody {
   finalDaysArray?: CalendarMonth;
+  holidays: Holidays[];
+  filter: string;
 }
 
-const monthWrapper = css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-});
-
-const weekWrapper = css({
-  display: 'flex',
-  gap: '4px',
-});
-
-export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
+export function CalendarBody({
+  finalDaysArray,
+  holidays,
+  filter,
+}: CalendarBodyBody) {
   const [items, setItems] = useState<CalendarMonth>([]);
 
   const sensors = useSensors(
@@ -132,12 +127,14 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
               {item.map((dayItem, index) => {
                 return (
                   <CalendarDay
+                    holidays={holidays}
                     key={index}
                     dayItem={dayItem}
                     index={index}
                     addTask={addTask}
                     editTask={editTask}
                     deleteTask={deleteTask}
+                    filter={filter}
                   />
                 );
               })}
@@ -148,3 +145,14 @@ export function CalendarBody({ finalDaysArray }: CalendarBodyBody) {
     </DndContext>
   );
 }
+
+const monthWrapper = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+});
+
+const weekWrapper = css({
+  display: 'flex',
+  gap: '4px',
+});
