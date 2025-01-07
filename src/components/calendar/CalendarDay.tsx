@@ -11,6 +11,7 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Button } from '../shared/Button';
 import { Task } from '../task/Task';
 import { DayAndHolidays } from './DayAndHolidays';
+import { EditForm } from './EditForm';
 
 interface CalendarDayProps {
   dayItem: CalendarDay;
@@ -81,31 +82,23 @@ export function CalendarDay({
     setCurrentTaskId(taskId);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
+
   return (
     <div ref={ref} className={dayWrapper({ type, isDayToday, isWeekend })}>
       <DayAndHolidays dayItem={dayItem} filteredHolidays={filteredHolidays} />
       {type === 'current' && (
         <>
           <div className={taskWrapper}>
-            {isEditMode && (
-              <>
-                <input
-                  value={value}
-                  name="task"
-                  className={input}
-                  onChange={e => setValue(e.target.value)}
-                />
-                <div className={buttonSet}>
-                  <Button
-                    disabled={isEditMode && value.trim().length === 0}
-                    onClick={submitTask}
-                  >
-                    Ok
-                  </Button>
-                  <Button onClick={rejectAddNewTask}>Cancel</Button>
-                </div>
-              </>
-            )}
+            <EditForm
+              isEditMode={isEditMode}
+              value={value}
+              submitTask={submitTask}
+              rejectAddNewTask={rejectAddNewTask}
+              handleInputChange={handleInputChange}
+            />
             <SortableContext
               items={tasks}
               strategy={verticalListSortingStrategy}
@@ -171,30 +164,9 @@ const taskWrapper = css({
   flexDirection: 'column',
   gap: '4px',
   overflowY: 'scroll',
-
-  '&::-webkit-scrollbar': {
-    width: '0px',
-    height: '0px',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'transparent',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'transparent',
-  },
-});
-
-const buttonSet = css({
-  display: 'flex',
-  gap: '8px',
-  justifyContent: 'end',
+  overscrollBehavior: 'contain',
 });
 
 const btnWrapper = css({
   marginTop: 'auto',
-});
-
-const input = css({
-  padding: '4px',
-  borderRadius: '4px',
 });
