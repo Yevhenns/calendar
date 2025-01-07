@@ -172,6 +172,7 @@ const dayWrapper = ({
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
+    position: 'relative',
   });
 
 const taskWrapper = css({
