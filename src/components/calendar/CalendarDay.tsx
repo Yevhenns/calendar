@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { useDroppable } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -7,6 +5,7 @@ import {
 } from '@dnd-kit/sortable';
 import { css } from '@emotion/css';
 
+import { useTaskDayActions } from '../../hooks/useTaskDayActions';
 import { Button } from '../shared';
 import { Task } from '../task';
 import { DayAndHolidays } from './DayAndHolidays';
@@ -32,13 +31,19 @@ export function CalendarDay({
   holidays,
   filter,
 }: CalendarDayProps) {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [value, setValue] = useState('');
-  const [currentTaskId, setCurrentTaskId] = useState('');
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-
   const { id, type, tasks } = dayItem;
+
+  const {
+    value,
+    isEditMode,
+    filteredTasks,
+    setValue,
+    openInput,
+    submitTask,
+    rejectAddNewTask,
+    deleteItem,
+    editItem,
+  } = useTaskDayActions({ id, tasks, filter, addTask, editTask, deleteTask });
 
   const { setNodeRef } = useDroppable({
     id,
@@ -46,52 +51,9 @@ export function CalendarDay({
 
   const filteredHolidays = holidays.filter(item => item.date === id);
 
-  const openInput = () => {
-    setIsEditMode(true);
-    setEdit(false);
-    setCurrentTaskId('');
-  };
-
-  const submitTask = () => {
-    if (!edit) {
-      addTask(id, value);
-      setIsEditMode(false);
-      setEdit(false);
-      setValue('');
-    } else {
-      editTask(id, currentTaskId, value);
-      setIsEditMode(false);
-      setValue('');
-    }
-    setCurrentTaskId('');
-  };
-
-  const rejectAddNewTask = () => {
-    setIsEditMode(false);
-    setEdit(false);
-    setValue('');
-    setCurrentTaskId('');
-  };
-
-  const deleteItem = (taskId: string) => {
-    deleteTask(id, taskId);
-  };
-
-  const editItem = (taskId: string) => {
-    setIsEditMode(true);
-    setEdit(true);
-    const taskById = tasks.find(item => item.id === taskId);
-    setValue(taskById!.text);
-    setCurrentTaskId(taskId);
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
-
-  useEffect(() => {
-    setFilteredTasks(tasks.filter(item => item.text.includes(filter)));
-  }, [filter, tasks]);
 
   return (
     <DayWrapper
